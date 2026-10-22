@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="description" content="CivicLoop — Report civic problems like broken streetlights, garbage, or potholes in under a minute and track your complaints." />
+  <meta name="theme-color" content="#0d1117" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <title>CivicLoop — Report Civic Issues Fast</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔄</text></svg>" />
+</head>
+<body>
+
+<!-- ════════════════════════════════════════════════
+     APP WRAPPER
+════════════════════════════════════════════════ -->
+<div class="app-wrapper" id="app">
+
+  <!-- ═══════════════════════════════
+       SCREEN 1 — HOME
+  ═══════════════════════════════ -->
+  <section class="screen active" id="screen-home" aria-label="Home">
+
+    <!-- Top bar -->
+    <header class="topbar" role="banner">
+      <a href="#" class="topbar-logo" aria-label="CivicLoop home">
+        <div class="logo-icon" aria-hidden="true">🔄</div>
+        <span class="logo-text">CivicLoop</span>
+      </a>
+      <span style="font-size:.82rem;color:var(--text-secondary);font-weight:500;">Ghaziabad</span>
+    </header>
+
+    <!-- Hero -->
+    <div class="hero" role="region" aria-label="Welcome">
+      <p class="hero-greeting">Namaste, Priya 👋</p>
+      <h1 class="hero-title">Your voice,<br>your neighbourhood.</h1>
+      <p class="hero-sub">Report any civic issue in under a minute.<br>We'll make sure it gets heard.</p>
+
+      <button
+        class="btn-primary"
+        id="btn-report-issue"
+        aria-label="Report a civic issue"
+      >
+        📢 Report an Issue
+      </button>
+    </div>
+
+    <!-- Stats strip -->
+    <div class="stats-strip" role="region" aria-label="Your report stats">
+      <div class="stat-chip">
+        <div class="stat-num" id="stat-total">0</div>
+        <div class="stat-label">Total</div>
+      </div>
+      <div class="stat-chip">
+        <div class="stat-num" id="stat-received">0</div>
+        <div class="stat-label">Received</div>
+      </div>
+      <div class="stat-chip">
+        <div class="stat-num" id="stat-resolved">0</div>
+        <div class="stat-label">Resolved</div>
+      </div>
+    </div>
+
+    <!-- Reports list -->
+    <div class="section-header" role="region" aria-label="Your reports section header">
+      <h2 class="section-title">
+        📋 My Reports
+      </h2>
+    </div>
+
+    <div id="reports-list" class="reports-list" role="list" aria-label="My submitted reports">
+      <!-- Filled by JS -->
+    </div>
+
+  </section><!-- /screen-home -->
+
+
+  <!-- ═══════════════════════════════
+       SCREEN 2 — REPORT FORM
+  ═══════════════════════════════ -->
+  <section class="screen" id="screen-report" aria-label="Report an issue form" hidden>
+
+    <!-- Top bar -->
+    <header class="topbar" role="banner">
+      <button class="back-btn" data-go-home aria-label="Go back to home">
+        ← Back
+      </button>
+      <span style="font-size:.95rem;font-weight:700;">New Report</span>
+      <div style="width:72px;"></div><!-- spacer -->
+    </header>
+
+    <!-- Progress bar (3 steps) -->
+    <div class="progress-bar" role="progressbar" aria-label="Form completion progress" aria-valuenow="1" aria-valuemin="1" aria-valuemax="3">
+      <div class="progress-step active"></div>
+      <div class="progress-step"></div>
+      <div class="progress-step"></div>
+    </div>
+
+    <form id="report-form" class="form-body" novalidate aria-label="Issue report form">
+
+      <!-- ── Category ─────────────────── -->
+      <div class="form-section" role="group" aria-labelledby="cat-label">
+        <label class="form-label" id="cat-label">
+          <span>🏷️ Category</span>
+          <span class="label-required" aria-label="required">*required</span>
+        </label>
+        <div class="category-grid">
+          <button type="button" class="cat-btn" data-cat-id="streetlight" aria-pressed="false">
+            <span class="cat-emoji" aria-hidden="true">💡</span>
+            <span class="cat-name">Streetlight</span>
+          </button>
+          <button type="button" class="cat-btn" data-cat-id="garbage" aria-pressed="false">
+            <span class="cat-emoji" aria-hidden="true">🗑️</span>
+            <span class="cat-name">Garbage</span>
+          </button>
+          <button type="button" class="cat-btn" data-cat-id="pothole" aria-pressed="false">
+            <span class="cat-emoji" aria-hidden="true">🕳️</span>
+            <span class="cat-name">Pothole</span>
+          </button>
+          <button type="button" class="cat-btn" data-cat-id="water" aria-pressed="false">
+            <span class="cat-emoji" aria-hidden="true">💧</span>
+            <span class="cat-name">Water</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- ── Description ──────────────── -->
+      <div class="form-section">
+        <label class="form-label" for="desc-input">
+          <span>📝 Description</span>
+          <span class="label-required" aria-label="required">*required</span>
+        </label>
+        <textarea
+          id="desc-input"
+          class="form-textarea"
+          placeholder="e.g. The streetlight near Gate 3 has been off for 3 days…"
+          maxlength="300"
+          rows="4"
+          aria-required="true"
+          aria-describedby="desc-hint"
+        ></textarea>
+        <p id="desc-hint" style="font-size:.76rem;color:var(--text-muted);margin-top:5px;">Max 300 characters</p>
+      </div>
+
+      <!-- ── Photo (optional) ─────────── -->
+      <div class="form-section">
+        <label class="form-label" for="photo-input">
+          <span>📷 Photo</span>
+          <span style="font-size:.75rem;color:var(--text-muted);font-weight:400;">optional</span>
+        </label>
+
+        <!-- Upload zone -->
+        <div class="photo-upload-area" id="upload-area" aria-label="Upload a photo">
+          <span class="upload-icon" aria-hidden="true">📸</span>
+          <span class="upload-text">Tap to add a photo</span>
+          <span class="upload-hint">JPG, PNG, HEIC · max 8 MB</span>
+          <input
+            type="file"
+            id="photo-input"
+            accept="image/*"
+            capture="environment"
+            aria-label="Choose a photo from your camera or gallery"
+          />
+        </div>
+
+        <!-- Preview -->
+        <div class="photo-preview-wrap" id="photo-preview-wrap" aria-label="Selected photo preview">
+          <img id="photo-preview-img" src="" alt="Preview of attached photo" />
+          <button type="button" class="photo-remove-btn" id="remove-photo-btn" aria-label="Remove photo">✕</button>
+        </div>
+      </div>
+
+      <!-- ── Location ─────────────────── -->
+      <div class="form-section">
+        <label class="form-label" for="location-input">
+          <span>📍 Location</span>
+          <span class="label-required" aria-label="required">*required</span>
+        </label>
+
+        <div class="location-row">
+          <input
+            type="text"
+            id="location-input"
+            class="form-input"
+            placeholder="Type address or use GPS…"
+            autocomplete="street-address"
+            aria-required="true"
+            aria-describedby="location-status"
+          />
+          <button
+            type="button"
+            id="locate-btn"
+            class="btn-locate"
+            aria-label="Detect my current location"
+          >
+            📍 My Location
+          </button>
+        </div>
+
+        <p id="location-status" class="location-status" aria-live="polite"></p>
+      </div>
+
+      <!-- ── Spacer so sticky footer doesn't cover content ── -->
+      <div style="height:80px;"></div>
+
+    </form>
+
+    <!-- Sticky submit -->
+    <div class="form-submit-wrap">
+      <button
+        type="submit"
+        form="report-form"
+        class="btn-primary"
+        id="submit-btn"
+        aria-label="Submit your report"
+      >
+        ✅ Submit Report
+      </button>
+    </div>
+
+  </section><!-- /screen-report -->
+
+
+  <!-- ═══════════════════════════════
+       SCREEN 3 — CONFIRMATION
+  ═══════════════════════════════ -->
+  <section class="screen" id="screen-confirm" aria-label="Report confirmation" hidden>
+
+    <!-- Top bar -->
+    <header class="topbar" role="banner">
+      <button class="back-btn" data-go-home aria-label="Go back to home">
+        🏠 Home
+      </button>
+      <span style="font-size:.95rem;font-weight:700;">Confirmation</span>
+      <div style="width:72px;"></div>
+    </header>
+
+    <div class="confirm-body" role="main">
+
+      <!-- Success animation -->
+      <div class="confirm-anim" aria-hidden="true">✅</div>
+
+      <h1 class="confirm-title">Report Submitted!</h1>
+      <p class="confirm-subtitle">
+        Your issue has been received.<br>
+        We'll keep you updated on the progress.
+      </p>
+
+      <!-- Reference card -->
+      <div class="ref-card" role="region" aria-label="Report reference details">
+
+        <div class="ref-label">Reference Number</div>
+        <div class="ref-number" id="confirm-ref" aria-live="polite">CL-000000-0000</div>
+
+        <div class="ref-divider" aria-hidden="true"></div>
+
+        <div class="ref-detail-row">
+          <span class="ref-detail-label">Category</span>
+          <span class="ref-detail-value" id="confirm-cat">—</span>
+        </div>
+        <div class="ref-detail-row">
+          <span class="ref-detail-label">Description</span>
+          <span class="ref-detail-value" id="confirm-desc" style="max-width:58%;word-break:break-word;">—</span>
+        </div>
+        <div class="ref-detail-row">
+          <span class="ref-detail-label">Location</span>
+          <span class="ref-detail-value" id="confirm-loc" style="max-width:58%;word-break:break-word;">—</span>
+        </div>
+        <div class="ref-detail-row">
+          <span class="ref-detail-label">Submitted</span>
+          <span class="ref-detail-value" id="confirm-time">—</span>
+        </div>
+        <div class="ref-detail-row">
+          <span class="ref-detail-label">Status</span>
+          <span class="ref-detail-value">
+            <span class="status-inline">
+              <span aria-hidden="true">🟢</span>
+              <span>Received</span>
+            </span>
+          </span>
+        </div>
+
+      </div><!-- /ref-card -->
+
+      <p style="font-size:.82rem;color:var(--text-muted);text-align:center;line-height:1.5;margin-top:4px;">
+        Save your reference number for follow-ups.<br>
+        Typical response time: 3–5 working days.
+      </p>
+
+      <!-- Actions -->
+      <button
+        class="btn-primary"
+        id="btn-new-report"
+        style="margin-top:28px;width:100%;"
+        aria-label="Submit another report"
+      >
+        📢 Report Another Issue
+      </button>
+
+      <button
+        class="btn-secondary"
+        data-go-home
+        aria-label="Return to home screen"
+      >
+        🏠 Back to Home
+      </button>
+
+    </div><!-- /confirm-body -->
+
+  </section><!-- /screen-confirm -->
+
+</div><!-- /app-wrapper -->
+
+<!-- Toast notification -->
+<div id="toast" role="status" aria-live="assertive" aria-atomic="true"></div>
+
+<script src="app.js"></script>
+</body>
+</html>
